@@ -1,0 +1,54 @@
+-
+  name: build exec appli web
+  hosts: ubuntus
+  tasks:
+    - name: rep build
+      file:
+        path: /home/vagrant/docker
+        state: directory
+        owner: vagrant
+        group: vagrant
+    - name: placement du dockerfile
+      copy:
+        src: /home/vagrant/ansible/Dockerfile
+        dest: /home/vagrant/docker
+        owner: vagrant
+        group: vagrant
+
+    - name: build
+      docker_image:
+        name: pythonapp:v1.0
+         build:
+           path: /home/vagrant/docker/ansible/
+        source: build
+        state: present
+
+    - name: conteneur1
+      tags: pythonapp1
+      docker_container:
+        name: pythonapp1
+        image: pythonapp:v1.0
+        state: started
+        restart: yes
+        ports:
+          - 5000:3001
+
+    - name: conteneur2
+      tags: pythonapp2
+      docker_container:
+        name: pythonapp2
+        image: pythonapp:v1.0
+        state: started
+        restart: yes
+        ports:
+          - 5000:3002
+
+    - name: conteneur3
+      tags: pythonapp3
+      docker_container:
+        name: pythonapp3
+        image: pythonapp:v1.0
+        state: started
+        restart: yes
+        ports:
+          - 5000:3003
